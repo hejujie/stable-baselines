@@ -55,7 +55,7 @@ def test_failures_and_warnings():
         env.observation_space = new_obs_space
         # Patch methods to avoid errors
         env.reset = new_obs_space.sample
-        def patched_step(action):
+        def patched_step(_action):
             return new_obs_space.sample(), 0.0, False, {}
         env.step = patched_step
         with pytest.warns(UserWarning):
@@ -79,7 +79,7 @@ def test_failures_and_warnings():
         check_env(env)
 
     # Return a wrong reward
-    def step_wrong_reward(action):
+    def step_wrong_reward(_action):
         return env.observation_space.sample(), np.ones(1), False, {}
 
     env.step = step_wrong_reward
@@ -87,7 +87,7 @@ def test_failures_and_warnings():
         check_env(env)
 
     # Info dict is not returned
-    def step_no_info(action):
+    def step_no_info(_action):
         return env.observation_space.sample(), 0.0, False
 
     env.step = step_no_info
@@ -95,7 +95,7 @@ def test_failures_and_warnings():
         check_env(env)
 
     # Done is not a boolean
-    def step_wrong_done(action):
+    def step_wrong_done(_action):
         return env.observation_space.sample(), 0.0, 3.0, False
 
     env.step = step_wrong_done
