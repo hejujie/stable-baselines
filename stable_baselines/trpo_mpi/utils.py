@@ -57,7 +57,8 @@ def traj_segment_generator(policy, env, horizon, reward_giver=None, gail=False):
     done = False
 
     while True:
-        action, vpred, states, _ = policy.step(observation.reshape(-1, *observation.shape), states, done)
+        print("done before", done)
+        action, vpred, states, _ = policy.step(observation.reshape(-1, *observation.shape), states, [done] if type(done) is bool else done)
         # Slight weirdness here because we need value function at time T
         # before returning segment [0, T-1] so we get the correct
         # terminal value

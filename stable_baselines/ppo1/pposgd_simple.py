@@ -102,14 +102,15 @@ class PPO1(ActorCriticRLModel):
                 self.set_random_seed(self.seed)
                 self.sess = tf_util.make_session(num_cpu=self.n_cpu_tf_sess, graph=self.graph)
 
+                n_steps = self.optim_batchsize // self.n_envs
                 # Construct network for new policy
-                self.policy_pi = self.policy(self.sess, self.observation_space, self.action_space, self.n_envs, 1,
-                                             None, reuse=False, **self.policy_kwargs)
+                self.policy_pi = self.policy(self.sess, self.observation_space, self.action_space, self.n_envs, n_steps,
+                                             self.n_envs * n_steps, reuse=False, **self.policy_kwargs)
 
                 # Network for old policy
                 with tf.variable_scope("oldpi", reuse=False):
-                    old_pi = self.policy(self.sess, self.observation_space, self.action_space, self.n_envs, 1,
-                                         None, reuse=False, **self.policy_kwargs)
+                    old_pi = self.policy(self.sess, self.observation_space, self.action_space, self.n_envs, n_steps,
+                                         self.n_envs * n_steps, reuse=False, **self.policy_kwargs)
 
                 with tf.variable_scope("loss", reuse=False):
                     # Target advantage function (if applicable)
